@@ -1,0 +1,142 @@
+{%extends "./navbar.html"%}
+{% block content%}
+<style>
+  .jumbotemp {
+    padding: 2px;
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  .dataDisplay{
+    font-size: 150%
+  }
+
+  .status{
+    font-weight:bold;
+  }
+</style>
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+<table class="table table-inverse table-striped">
+  <col width='600'>
+  <tr>
+    <td colspan="2">
+      <div class="container-fluid">
+        <div class="jumbotron">
+          <h4 class="display-4" id="temperatureHeading">Temperature(..)</h1>
+            <h4 class="lead">Temperature data in *C</h4>
+            <hr class="my-4">
+            <p id='temp' class="dataDisplay">Loading data</p>
+            <p class="lead">
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-primary" id="setButton">&nbsp Set &nbsp</button>
+                </div>
+                <div class="col">
+                  <input class='input-group-sm' id='setValue' type="text" placeholder="Threshold Temperature"
+                    autocomplete=off>
+                </div>
+              </div>
+            </p>
+        </div>
+      </div>
+    </td>
+    <td colspan="2">
+      <div class="container-fluid">
+        <div class="jumbotron">
+          <h1 class="display-4">Humidity &nbsp &nbsp &nbsp</h1>
+          <h4 class="lead">Humidity data in %</h4>
+          <hr class="my-4">
+          <p id='hum' class="dataDisplay">Loading data</p>
+          <p class="lead">
+            <br>
+          </p>
+        </div>
+      </div>
+    </td>
+  </tr>
+  
+    <tr class="status">
+      <td>
+        <div class="container">
+          Food status
+        </div>
+      </td>
+      <td>
+        <div class="container">
+          <p id='foodData'>...</p>
+        </div>
+      </td>
+      <td>
+        <div class="container">
+          Fan status
+        </div>
+      </td>
+      <td>
+        <div class="container">
+          <p id='fanData'>...</p>
+        </div>
+      </td>
+    </tr>
+  
+
+  <tr class="status">
+    <td>
+      <div class="container">
+        Light status
+      </div>
+    </td>
+    <td>
+      <div class="container">
+        <p id='lightData'>...</p>
+      </div>
+    </td>
+    <td>
+      <div class="container">
+        Heater status
+      </div>
+    </td>
+    <td>
+      <div class="container">
+        <p id='heaterData'>...</p>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+{% block javascript %}
+<script>
+  $(document).ready(setInterval(function () {
+    $.ajax({
+      type: 'GET',
+      success: function (data) {
+        $('#temp').text(data['temperature'])
+        $('#hum').text(data['humidity'] + '%')
+        $('#lightData').text(data['light'])
+        $('#fanData').text(data['fan'])
+        $('#heaterData').text(data['heater'])
+        $('#foodData').text(data['food'])
+        $('#temperatureHeading').text("Temperature ("+(data['threshold'])+')')
+      }
+    });
+  }, 1600))
+
+
+  $('#setButton').click(function (e) {
+    val = $('#setValue').val()
+    console.log('here')
+    $.ajax({
+      url: '/input',
+      type: 'GET',
+      data: {
+        'val': val
+      },
+      dataType: 'json'
+    })
+  })
+</script>
+{% endblock %}
+{% endblock %}
